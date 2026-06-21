@@ -14,7 +14,7 @@ const allow = FRONTEND_URL.split(',').map((s) => s.trim()).filter(Boolean);
 app.use(cors({ origin: allow.length ? allow : true }));
 app.use(express.json({ limit: '14mb' })); // el plano viaja en base64
 
-app.get('/api/health', (req, res) => res.json({ ok: true, service: 'CCTVPLAN IA' }));
+app.get('/api/health', (req, res) => res.json({ ok: true, service: 'WIFIPlan API' }));
 
 app.post('/api/autodiseno', async (req, res) => {
   const { imagenDataUrl, brief, pxPerMeter, planoW, planoH, catalogo, marcaPreferida, muros } = req.body || {};
@@ -194,4 +194,4 @@ app.delete('/api/camaras/:camId', requireAuth, async (req, res) => {
 });
 
 init().catch((e) => console.error('init DB:', e.message || e));
-app.listen(PORT, () => console.log(`🧠 CCTVPLAN IA escuchando en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`📡 WIFIPlan API escuchando en puerto ${PORT}`));
