@@ -1,0 +1,12 @@
+{
+  "dispositivos": [
+    { "id": "sw-poe-8", "modelo": "Switch PoE 8 puertos", "tipo": "switch", "icono": "🔌" },
+    { "id": "sw-poe-16", "modelo": "Switch PoE 16 puertos", "tipo": "switch", "icono": "🔌" },
+    { "id": "sw-poe-24", "modelo": "Switch PoE 24 puertos", "tipo": "switch", "icono": "🔌" },
+    { "id": "sw-poe-48", "modelo": "Switch PoE 48 puertos", "tipo": "switch", "icono": "🔌" },
+    { "id": "controladora", "modelo": "Controladora WiFi / Gateway", "tipo": "controladora", "icono": "🧠" },
+    { "id": "router", "modelo": "Router / Firewall", "tipo": "router", "icono": "🛡️" },
+    { "id": "ups", "modelo": "UPS / Respaldo", "tipo": "ups", "icono": "🔋" },
+    { "id": "rack", "modelo": "Rack / Gabinete", "tipo": "rack", "icono": "🗃️" }
+  ]
+}
