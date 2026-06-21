@@ -19,18 +19,21 @@ export const RINGS = [
   { key: 'excelente', label: 'Excelente −50 dBm', mult: 0.27, fill: 'rgba(34,197,94,0.34)' },
 ];
 
-// Materiales de muro y su atenuación (dB) de referencia a 5 GHz.
+// Materiales de muro: atenuación (dB) de referencia a 5 GHz + color identificador.
 export const MATERIALES = [
-  { key: 'tabique', nombre: 'Tabique (yeso-cartón)', db: 3 },
-  { key: 'madera', nombre: 'Madera', db: 4 },
-  { key: 'vidrio', nombre: 'Vidrio común', db: 3 },
-  { key: 'vidrio_low_e', nombre: 'Vidrio termopanel / Low-E', db: 10 },
-  { key: 'ladrillo', nombre: 'Ladrillo', db: 7 },
-  { key: 'hormigon', nombre: 'Hormigón armado', db: 14 },
-  { key: 'metal', nombre: 'Metal / estructura', db: 25 },
+  { key: 'tabique', nombre: 'Tabique (yeso-cartón)', db: 3, color: '#94a3b8' },
+  { key: 'madera', nombre: 'Madera', db: 4, color: '#b45309' },
+  { key: 'vidrio', nombre: 'Vidrio común', db: 3, color: '#22d3ee' },
+  { key: 'vidrio_low_e', nombre: 'Vidrio termopanel / Low-E', db: 10, color: '#0891b2' },
+  { key: 'ladrillo', nombre: 'Ladrillo', db: 7, color: '#ea580c' },
+  { key: 'hormigon', nombre: 'Hormigón armado', db: 14, color: '#475569' },
+  { key: 'metal', nombre: 'Metal / estructura', db: 25, color: '#dc2626' },
 ];
 export const MAT_DEFAULT = 'tabique';
 const MAT_DB = Object.fromEntries(MATERIALES.map((m) => [m.key, m.db]));
+const MAT_MAP = Object.fromEntries(MATERIALES.map((m) => [m.key, m]));
+export const matColor = (key) => (MAT_MAP[key] || MAT_MAP[MAT_DEFAULT]).color;
+export const matNombre = (key) => (MAT_MAP[key] || MAT_MAP[MAT_DEFAULT]).nombre;
 
 // La atenuación empeora en bandas altas (2.4 penetra mejor que 5 y 6 GHz).
 const BANDA_FACTOR = { '2.4': 0.65, '5': 1.0, '6': 1.2 };

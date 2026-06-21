@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import catalogo from './data/aps.json'
 import dispositivos from './data/dispositivos.json'
-import { coberturaWifi, RINGS, bandasPorWifi, atenuacionMuro, radioEfectivo, MAT_DEFAULT, MATERIALES, NOMBRE_BANDA, CANALES, canalSugerido } from './lib/wifi'
+import { coberturaWifi, RINGS, bandasPorWifi, atenuacionMuro, radioEfectivo, MAT_DEFAULT, MATERIALES, matColor, matNombre, NOMBRE_BANDA, CANALES, canalSugerido } from './lib/wifi'
 import { raySeg, dist, clamp } from './geom'
 import { abrirPropuesta } from './proposal'
 
@@ -590,7 +590,7 @@ export default function App() {
               })}
 
               {proj.cables.map((c, i) => <line key={'k' + i} x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2} stroke="#22d3ee" strokeWidth={2} strokeDasharray="6 4" vectorEffect="non-scaling-stroke" />)}
-              {proj.walls.map((w, i) => { const db = atenuacionMuro(w.mat || MAT_DEFAULT, '5'); const col = db >= 14 ? '#ef4444' : db >= 7 ? '#f59e0b' : '#2563eb'; return <line key={'w' + i} x1={w.x1} y1={w.y1} x2={w.x2} y2={w.y2} stroke={col} strokeWidth={4} strokeLinecap="round" vectorEffect="non-scaling-stroke" /> })}
+              {proj.walls.map((w, i) => <line key={'w' + i} x1={w.x1} y1={w.y1} x2={w.x2} y2={w.y2} stroke={matColor(w.mat || MAT_DEFAULT)} strokeWidth={4} strokeLinecap="round" vectorEffect="non-scaling-stroke"><title>{matNombre(w.mat || MAT_DEFAULT)}</title></line>)}
 
               {proj.devices.map((d, i) => {
                 const dd = devById(d.devId)
@@ -609,6 +609,7 @@ export default function App() {
             </g>
           </svg>
           <div className="legend">{BANDAS.slice().reverse().map((b) => (<span key={b.key}><i style={{ background: b.fill }} />{b.label}</span>))}</div>
+          {proj.walls.length > 0 && <div className="legend mat-legend">{MATERIALES.map((m) => <span key={m.key}><i style={{ background: m.color }} />{m.nombre.split(' ')[0]} {m.db}dB</span>)}</div>}
         </main>
       </div>
 
