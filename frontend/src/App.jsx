@@ -827,11 +827,20 @@ function CamView({ cam, idx, cat, ppm, walls, sel, onDown, coCanal }) {
   for (let i = 0; i <= steps; i++) {
     const a = (i / steps) * 2 * Math.PI
     const dx = Math.cos(a), dy = Math.sin(a)
-    let db = 0
-    for (const w of walls) { const t = raySeg(cam.x, cam.y, dx, dy, w.x1, w.y1, w.x2, w.y2); if (t != null && t > 0.5 && t < maxR) db += atenuacionMuro(w.mat || MAT_DEFAULT, banda) }
-    ang.push({ dx, dy, db })
+    const cross = []
+    for (const w of walls) {
+      const t = raySeg(cam.x, cam.y, dx, dy, w.x1, w.y1, w.x2, w.y2)
+      if (t != null && t > 0.5 && t < maxR) cross.push({ t, k: Math.pow(10, -atenuacionMuro(w.mat || MAT_DEFAULT, banda) / 30) })
+    }
+    cross.sort((u, v) => u.t - v.t)
+    ang.push({ dx, dy, cross })
   }
-  const poly = (rPx) => ang.map((p) => { const r = radioEfectivo(rPx, p.db); return `${(cam.x + p.dx * r).toFixed(1)},${(cam.y + p.dy * r).toFixed(1)}` }).join(' ')
+  // El alcance es full hasta el muro y recién detrás de él se atenúa (por cada muro que cruza).
+  const poly = (rPx) => ang.map((p) => {
+    let reach = rPx
+    for (const c of p.cross) { if (c.t >= reach) break; reach = c.t + (reach - c.t) * c.k }
+    return `${(cam.x + p.dx * reach).toFixed(1)},${(cam.y + p.dy * reach).toFixed(1)}`
+  }).join(' ')
   const col = coCanal ? '#ef4444' : sel ? '#0ea5e9' : '#6366f1'
   return (
     <g onPointerDown={onDown} style={{ cursor: 'move' }}>
