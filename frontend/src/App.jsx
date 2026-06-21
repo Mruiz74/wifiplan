@@ -316,6 +316,7 @@ export default function App() {
     setSel(null)
   }
   const deshacerLinea = (arr) => setProj((p) => ({ ...p, [arr]: p[arr].slice(0, -1) }))
+  const borrarMuro = (i) => { snapshot(); setProj((p) => ({ ...p, walls: p.walls.filter((_, k) => k !== i) })) }
 
   const toggleCapa = (name) => setDxf((d) => { const s = new Set(d.sel); s.has(name) ? s.delete(name) : s.add(name); return { ...d, sel: s } })
   const importarCapas = () => {
@@ -515,6 +516,7 @@ export default function App() {
         <button className={'btn ' + (mode === 'wall' ? 'on' : '')} onClick={() => { setMode(mode === 'wall' ? 'select' : 'wall'); setLineStart(null) }}>🧱 Muro</button>
         <button className={'btn ' + (mode === 'rect' ? 'on' : '')} onClick={() => { setMode(mode === 'rect' ? 'select' : 'rect'); setLineStart(null) }} title="Dibujar una sala (rectángulo) en 2 clics">▭ Sala</button>
         <select className="in" style={{ width: 'auto', margin: 0, padding: '6px 8px' }} value={matSel} onChange={(e) => setMatSel(e.target.value)} title="Material del muro a dibujar">{MATERIALES.map((m) => <option key={m.key} value={m.key}>{m.nombre} ({m.db}dB)</option>)}</select>
+        <button className={'btn ' + (mode === 'delwall' ? 'on' : '')} onClick={() => { setMode(mode === 'delwall' ? 'select' : 'delwall'); setLineStart(null) }} title="Borrar muros: clic en un muro para eliminarlo">🧹 Borrar muro</button>
         <button className="btn" disabled={murosLoading} onClick={detectarMurosIA} title="Detectar recintos con IA (aproximado)">{murosLoading ? '🪄…' : '🪄 Muros IA'}</button>
         <button className={'btn ' + (mode === 'cable' ? 'on' : '')} onClick={() => { setMode(mode === 'cable' ? 'select' : 'cable'); setLineStart(null) }}>🔗 Cable</button>
         {mode === 'wall' && <button className="btn" onClick={() => deshacerLinea('walls')}>↶</button>}
@@ -590,7 +592,12 @@ export default function App() {
               })}
 
               {proj.cables.map((c, i) => <line key={'k' + i} x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2} stroke="#22d3ee" strokeWidth={2} strokeDasharray="6 4" vectorEffect="non-scaling-stroke" />)}
-              {proj.walls.map((w, i) => <line key={'w' + i} x1={w.x1} y1={w.y1} x2={w.x2} y2={w.y2} stroke={matColor(w.mat || MAT_DEFAULT)} strokeWidth={4} strokeLinecap="round" vectorEffect="non-scaling-stroke"><title>{matNombre(w.mat || MAT_DEFAULT)}</title></line>)}
+              {proj.walls.map((w, i) => (
+                <g key={'w' + i}>
+                  <line x1={w.x1} y1={w.y1} x2={w.x2} y2={w.y2} stroke={matColor(w.mat || MAT_DEFAULT)} strokeWidth={4} strokeLinecap="round" vectorEffect="non-scaling-stroke" style={{ pointerEvents: mode === 'delwall' ? 'none' : 'auto' }}><title>{matNombre(w.mat || MAT_DEFAULT)}</title></line>
+                  {mode === 'delwall' && <line x1={w.x1} y1={w.y1} x2={w.x2} y2={w.y2} stroke="transparent" strokeWidth={16} vectorEffect="non-scaling-stroke" style={{ cursor: 'pointer' }} onPointerDown={(e) => { e.stopPropagation(); borrarMuro(i) }} />}
+                </g>
+              ))}
 
               {proj.devices.map((d, i) => {
                 const dd = devById(d.devId)
